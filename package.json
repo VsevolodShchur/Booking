@@ -1,0 +1,13 @@
+{
+  "name": "myapp",
+  "description": "a really cool app",
+  "version": "1.0.0",
+  "engines": {
+    "node": "12.13.0"
+  },
+  "dependencies": {
+   "express":"*",
+   "body-parser":"*",
+   "bcrypt": "^0.8.5"
+  }
+}
