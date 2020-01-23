@@ -4,7 +4,7 @@ const bookingRouter = require("./router.js")
 const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const process = require('process');
-const url = process.env.url;
+const url = process.env.connectionString;
 
 app.use("/free_tables/:date", function(request, response){
 	var date = request.params.date;
@@ -14,7 +14,7 @@ app.use("/free_tables/:date", function(request, response){
 		if(err)
 			return console.log(err);
 
-		const db = client.db("booking");
+		const db = client.db("TableBooking");
 		const collection = db.collection("booking");
 
 		var freeTables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -44,7 +44,7 @@ app.use("/book/:email/:date/:time/:table", function (request, response) {
 		if(err)
 			return console.log(err);
 
-		const db = client.db("booking");
+		const db = client.db("TableBooking");
 		const collection = db.collection("booking");
 
 		collection.find({bookDate: date, bookedTable: table}).toArray(function(err, results){
