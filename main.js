@@ -5,6 +5,29 @@ const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const process = require('process');
 const url = process.env.connectionString;
+//const url = "mongodb://localhost:27017/";
+app.use(express.static('public')); //express generator
+var tablesCount = 0; 
+getTablesCount(function(count){
+	tablesCount = count;
+});
+
+function getTablesCount(callback){
+	const mongoClient = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+
+	mongoClient.connect(function(err, client){
+		if(err)
+			return console.log(err);
+
+		const db = client.db("TableBooking");
+		const collection = db.collection("config");
+
+		collection.find().toArray(function(err, result){
+			client.close();
+			return callback(result[0].tables);
+		});
+	});
+}
 
 app.use("/free_tables/:date", function(request, response){
 	var date = request.params.date;
@@ -16,8 +39,15 @@ app.use("/free_tables/:date", function(request, response){
 
 		const db = client.db("TableBooking");
 		const collection = db.collection("booking");
-
-		var freeTables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+		
+		console.log(tablesCount);
+		var freeTables = [];
+		for(var i = 1; i <= tablesCount; i++){
+			freeTables.push(Number(i));
+		} 
+		freeTables.sort(function(a,b){ 
+  			return a - b
+		});
 		collection.find({bookDate: date}).toArray(function(err, results){
 			var bookedTables = results.map(x => Number(x.bookedTable));
 			for(var i = 0; i < freeTables.length; i++){ 

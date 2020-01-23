@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Название</title>
+	<title>Забронировать</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -15,6 +15,10 @@
 			xhr.addEventListener("load", function () {
 				var received = JSON.parse(xhr.response);
 				console.log(received);
+				if (received.length == 0){
+					showPopUp("Все стоыл на эту дату забронированы");
+					return;
+				}
 				let resultStr = "";
 				received.forEach(item => {
 					resultStr += '<option>';
@@ -67,10 +71,13 @@
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/">Название</a>
+				<a class="navbar-brand" href="/" style="padding: 0;">
+          			<img src="https://sun9-9.userapi.com/c623830/v623830655/5f65e/LJF_M5ieOgc.jpg" alt="" style="width:50px;height:50px;">
+        		</a>
+				<a class="navbar-brand" href="/">Матмех Lounge</a>
 			</div>
 			<ul class="nav navbar-nav">
 				<li><a href="about">О нас</a></li>
@@ -80,14 +87,18 @@
 					</p>
 				</li>
 			</ul>
+			<ul class="nav navbar-nav navbar-right">
+      			<li><a><span class="glyphicon glyphicon-earphone"></span> (343) 123-45-67</a></li>
+      			<li><a><span class="glyphicon glyphicon-map-marker"></span> Тургенева 4</a></li>
+    		</ul>
 		</div>
 	</nav>
 
 	<div class="container">
-		<h2>Забронировать</h2>
+		<div class="col-xs-6">
 		<form>
 			<div class="form-group row">
-				<div class="col-xs-4">
+				<div class="col-xs-6">
 					<label for="email">Ваш email для связи:</label>
 					<input class="form-control" type="email" id="email" placeholder="examle@mail.com" name="email" required="1">
 				</div>
@@ -111,8 +122,13 @@
 					</select>
 				</div>
 			</div>
-			<input type="button" class="btn btn-primary" value="Забронировать" onclick="tryBook()" />
+			<input type="button" class="btn btn-primary" value="Забронировать столик" onclick="tryBook()" />
 		</form>
+		</div>
+		<div class="col-xs-6">
+
+			<img src="/images/tables.jpg" class="img-rounded">
+		</div>
 	</div>
 
 	<div id="myModal" class="modal fade" role="dialog">
