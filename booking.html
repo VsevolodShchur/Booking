@@ -14,9 +14,8 @@
 			xhr.open("GET", "/free_tables/" + date, true);   
 			xhr.addEventListener("load", function () {
 				var received = JSON.parse(xhr.response);
-				console.log(received);
 				if (received.length == 0){
-					showPopUp("Все стоыл на эту дату забронированы");
+					showPopUp("Все столы на эту дату забронированы");
 					return;
 				}
 				let resultStr = "";
@@ -36,7 +35,12 @@
 			var time = document.getElementById("time").value;
 			var table = document.getElementById("table-select").value;
 
-			sendBookRequest(email, date, time, table);
+			if (email == "" || date == "" || time == ""){
+				showPopUp("Вы не ввели все данные");
+			}
+			else {
+				sendBookRequest(email, date, time, table);
+			}
 		}
 
 		function sendBookRequest(email, date, time, table){
@@ -46,7 +50,6 @@
 			'/' + date + 
 			'/' + time + 
 			'/' + table;
-			console.log(request);
 			xhr.open("GET", request, true);  
 			xhr.addEventListener("load", function () {
 				handleResponse(xhr.response, email, date, time, table);
@@ -56,10 +59,10 @@
 
 		function handleResponse(response, email, date, time, table){
 			if (response == "Ok"){
-				showPopUp(`Столик ${table} забронирован на ${time} ${date}`);
+				showPopUp(`Стол ${table} забронирован на ${time} ${date}`);
 			}
 			else{
-				showPopUp(`Столик ${table} на эту дату уже занят`);
+				showPopUp(`Стол ${table} на эту дату уже занят`);
 			}
 		}
 
@@ -75,7 +78,7 @@
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="/" style="padding: 0;">
-					<img src="https://sun9-9.userapi.com/c623830/v623830655/5f65e/LJF_M5ieOgc.jpg" alt="" style="width:50px;height:50px;">
+					<img src="images/icon.png" alt="" style="width:50px;height:50px;">
 				</a>
 				<a class="navbar-brand" href="/">Матмех Lounge</a>
 			</div>
@@ -115,7 +118,7 @@
 						<select class="form-control" id="table-select">
 						</select>
 					</div>
-					<input type="button" class="btn btn-primary" value="Забронировать столик" onclick="tryBook()" />
+					<input type="button" class="btn btn-primary" value="Забронировать стол" onclick="tryBook()" />
 				</form>
 			</div>
 			<div class="col-md-6">
