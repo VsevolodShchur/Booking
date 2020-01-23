@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Название</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script>
+		function fillFreeTablesList(){
+			var date = document.getElementById("date").value;
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/free_tables/" + date, true);   
+			xhr.addEventListener("load", function () {
+				var received = JSON.parse(xhr.response);
+				console.log(received);
+				let resultStr = "";
+				received.forEach(item => {
+					resultStr += '<option>';
+					resultStr += item;
+					resultStr += '</option>'
+				});
+				document.getElementById("table-select").innerHTML = resultStr;
+			});
+			xhr.send();
+		}
+
+		function tryBook(){
+			var email = document.getElementById("email").value;
+			var date = document.getElementById("date").value;
+			var time = document.getElementById("time").value;
+			var table = document.getElementById("table-select").value;
+
+			sendBookRequest(email, date, time, table);
+		}
+
+		function sendBookRequest(email, date, time, table){
+			var xhr = new XMLHttpRequest();
+			var request = '/book' +
+				'/' + email + 
+				'/' + date + 
+				'/' + time + 
+				'/' + table;
+			console.log(request);
+			xhr.open("GET", request, true);  
+			xhr.addEventListener("load", function () {
+				handleResponse(xhr.response, email, date, time, table);
+			});
+			xhr.send();
+		}
+
+		function handleResponse(response, email, date, time, table){
+			if (response == "Ok"){
+				showPopUp(`Столик ${table} забронирован на ${time} ${date}`);
+			}
+			else{
+				showPopUp(`Столик ${table} на эту дату уже занят`);
+			}
+		}
+
+		function showPopUp(message){
+			document.getElementById("message").innerHTML = message;
+			$("#myModal").modal();
+		}
+	</script>
+</head>
+<body>
+
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">Название</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li><a href="about">О нас</a></li>
+				<li>
+					<p class="navbar-btn">
+						<a href="booking" class="btn btn-default">Забронировать</a>
+					</p>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+		<h2>Забронировать</h2>
+		<form>
+			<div class="form-group row">
+				<div class="col-xs-4">
+					<label for="email">Ваш email для связи:</label>
+					<input class="form-control" type="email" id="email" placeholder="examle@mail.com" name="email" required="1">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-xs-4">
+					<label for="start">Дата:</label>
+					<input class="form-control" type="date" id="date" oninput="fillFreeTablesList()" required>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-xs-4">
+					<label for="start">Время:</label>
+					<input class="form-control" type="time" id="time" required>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-xs-4">
+					<label for="table-select">Столик:</label>
+					<select class="form-control" id="table-select">
+					</select>
+				</div>
+			</div>
+			<input type="button" class="btn btn-primary" value="Забронировать" onclick="tryBook()" />
+		</form>
+	</div>
+
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="message"></h4>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
