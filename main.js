@@ -3,7 +3,8 @@ const path = require('path');
 const bookingRouter = require("./router.js")
 const app = express();
 const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017/";
+const process = require('process');
+const url = process.env.url;
 
 app.use("/free_tables/:date", function(request, response){
 	var date = request.params.date;
